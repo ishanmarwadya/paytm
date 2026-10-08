@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vyapaar Pay – Field demo</title>
+<meta name="description" content="Guided demo for shop owners: feature tour, set up your own shop, record reactions. Velocity Squad, IIM Bangalore.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#002E6E; --cyan:#00BAF2; --action:#0067B8; --action-ink:#fff;
+  --bg:#F4F7FB; --surface:#FFFFFF; --surface-2:#EAF1F9; --surface-3:#DCE7F4;
+  --text:#0E1B2E; --muted:#51627A; --border:#D6E0EC;
+  --in:#0B7A43; --in-bg:#E3F5EB; --out:#B4321F; --out-bg:#FCE9E6; --warn:#8A5A00; --warn-bg:#FFF3D6;
+  --hero:#002E6E; --hero-muted:#B9CDEA; --shadow:0 1px 2px rgba(0,30,70,.06),0 4px 14px rgba(0,30,70,.06);
+  --font:'Mukta',system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans',sans-serif; color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --navy:#8FB4FF; --action:#3BC4F5; --action-ink:#04172F; --bg:#0A1424; --surface:#111E33; --surface-2:#1A2A44; --surface-3:#22365A;
+  --text:#E8EEF7; --muted:#9AAAC2; --border:#263A5A; --in:#4ADE95; --in-bg:#0F2E22; --out:#FF8A7A; --out-bg:#3A1A17; --warn:#FFC966; --warn-bg:#3A2C0A;
+  --hero:#0F2A57; --hero-muted:#A9BEDD; --shadow:0 1px 2px rgba(0,0,0,.4); color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --navy:#8FB4FF; --action:#3BC4F5; --action-ink:#04172F; --bg:#0A1424; --surface:#111E33; --surface-2:#1A2A44; --surface-3:#22365A;
+  --text:#E8EEF7; --muted:#9AAAC2; --border:#263A5A; --in:#4ADE95; --in-bg:#0F2E22; --out:#FF8A7A; --out-bg:#3A1A17; --warn:#FFC966; --warn-bg:#3A2C0A;
+  --hero:#0F2A57; --hero-muted:#A9BEDD; --shadow:0 1px 2px rgba(0,0,0,.4); color-scheme:dark;}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:17px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+input,textarea{font:inherit;color:var(--text)}
+:focus-visible{outline:3px solid var(--cyan);outline-offset:2px;border-radius:8px}
+svg.i{width:1.15em;height:1.15em;flex:none}
+.logo-dark{display:none}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .logo-light{display:none}:root:not([data-theme="light"]) .logo-dark{display:inline}}
+:root[data-theme="dark"] .logo-light{display:none}:root[data-theme="dark"] .logo-dark{display:inline}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)} .small{font-size:15px} .tiny{font-size:13.5px}
+
+/* frame */
+.top{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--border)}
+.top-in{max-width:620px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:10px 16px}
+.top img{height:20px}
+.top .ttl{font-weight:800;color:var(--navy);font-size:16px;white-space:nowrap}
+.top .sp{flex:1}
+.ib{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--surface-2)}
+.ib svg{width:20px;height:20px}
+.timer{font-size:14px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.steps{max-width:620px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:0 16px 10px}
+.steps div{font-size:12.5px;font-weight:700;color:var(--muted)}
+.steps i{display:block;height:5px;border-radius:9px;background:var(--surface-3);margin-bottom:4px;overflow:hidden}
+.steps i b{display:block;height:100%;background:var(--action);border-radius:9px}
+.steps .on{color:var(--action)}
+main{max-width:620px;margin:0 auto;padding:18px 16px 120px}
+.foot{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--border);z-index:20}
+.foot-in{max-width:620px;margin:0 auto;display:flex;gap:10px;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px))}
+
+/* type & blocks */
+h1{font-size:28px;line-height:1.15;margin:4px 0 8px}
+h2{font-size:22px;line-height:1.2;margin:0 0 6px}
+h3{font-size:17px;margin:0 0 8px}
+.lead{font-size:18px;color:var(--muted);margin:0 0 18px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;align-items:center;gap:10px}
+.between{justify-content:space-between}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 20px;border-radius:14px;font-weight:700;font-size:17px;background:var(--action);color:var(--action-ink);text-decoration:none}
+.btn svg{width:19px;height:19px}
+.btn.sec{background:var(--surface-2);color:var(--text)}
+.btn.ghost{background:transparent;color:var(--action);padding:0 8px}
+.btn.block{width:100%}
+.btn.grow{flex:1}
+.btn.sm{min-height:40px;font-size:15px;padding:0 14px;border-radius:12px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.field{margin:0 0 14px}
+.field label,.qlabel{display:block;font-weight:700;font-size:15.5px;margin:0 0 6px}
+.field input,.field textarea{width:100%;border:1.5px solid var(--border);border-radius:12px;background:var(--surface);padding:12px 14px;min-height:50px;font-size:17px}
+.field textarea{min-height:90px;resize:vertical}
+.field input:focus,.field textarea:focus{border-color:var(--action);outline:0}
+.hint{font-size:13.5px;color:var(--muted);margin-top:4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:8px 16px;border-radius:999px;background:var(--surface-2);font-weight:600;font-size:15.5px;border:1.5px solid transparent;min-height:42px}
+.chip[aria-pressed="true"]{background:var(--surface);border-color:var(--action);color:var(--action)}
+.check{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:14px;background:var(--surface-2);text-align:left;width:100%}
+.box{width:24px;height:24px;border-radius:7px;border:2px solid var(--muted);flex:none;display:grid;place-items:center;margin-top:1px}
+.check[aria-checked="true"] .box{background:var(--action);border-color:var(--action);color:var(--action-ink)}
+.box svg{width:16px;height:16px}
+.note{display:flex;gap:10px;padding:12px 14px;border-radius:14px;background:var(--surface-2);font-size:15px}
+.note svg{width:20px;height:20px;flex:none;margin-top:2px;color:var(--action)}
+.note.warn{background:var(--warn-bg);color:var(--warn)} .note.warn svg{color:var(--warn)}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:700;padding:2px 10px;border-radius:999px;white-space:nowrap}
+.p-in{background:var(--in-bg);color:var(--in)} .p-out{background:var(--out-bg);color:var(--out)} .p-warn{background:var(--warn-bg);color:var(--warn)} .p-info{background:var(--surface-2);color:var(--navy)}
+.list .li{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.list .li:last-child{border-bottom:0}
+.li .body{flex:1;min-width:0}
+.li .body b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.li .body small{display:block;color:var(--muted);font-size:14px}
+.av{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:15px;flex:none;background:var(--surface-2);color:var(--navy)}
+.amt-in{color:var(--in)} .amt-out{color:var(--out)}
+
+/* home */
+.hero{background:var(--hero);color:#fff;border-radius:22px;padding:22px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-50px;top:-50px;width:180px;height:180px;border-radius:50%;border:28px solid rgba(0,186,242,.18)}
+.hero p{color:var(--hero-muted);margin:6px 0 0}
+.menu{display:grid;gap:10px}
+.mi{display:flex;align-items:center;gap:14px;padding:16px;border-radius:16px;background:var(--surface);border:1px solid var(--border);text-align:left;width:100%;text-decoration:none;color:var(--text)}
+.mi .mic{width:44px;height:44px;border-radius:13px;background:var(--surface-2);color:var(--action);display:grid;place-items:center;flex:none}
+.mi .mic svg{width:22px;height:22px}
+.mi b{display:block} .mi small{color:var(--muted);font-size:14.5px}
+.mi>div{flex:1}
+
+/* tour */
+.kicker{font-size:14px;font-weight:800;color:var(--action);letter-spacing:.2px}
+.hinglish{font-size:19px;font-weight:700;margin:2px 0 8px;color:var(--text)}
+.mock{background:var(--surface-2);border-radius:20px;padding:16px;margin:4px 0 16px}
+.mcard{background:var(--surface);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow)}
+.mrow{display:flex;justify-content:space-between;gap:10px;font-size:15px;padding:5px 0}
+.mrow span:first-child{color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{background:var(--surface);border-radius:14px;padding:10px 6px;text-align:center;font-size:13.5px;font-weight:700}
+.tile .av{margin:0 auto 6px;width:38px;height:38px;font-size:13px}
+.tile span{display:block;color:var(--muted);font-weight:600}
+.bubble{padding:9px 13px;border-radius:16px;font-size:15px;max-width:85%;margin:6px 0}
+.b-them{background:var(--surface);border-bottom-left-radius:4px}
+.b-me{background:var(--action);color:var(--action-ink);margin-left:auto;border-bottom-right-radius:4px}
+.wa{background:#E7F7EC;color:#10301C;border-radius:14px;padding:12px}
+:root[data-theme="dark"] .wa{background:#103222;color:#DDF5E5}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .wa{background:#103222;color:#DDF5E5}}
+.bar{height:12px;border-radius:9px;background:var(--surface-3);overflow:hidden;display:flex}
+.bar i{display:block;height:100%}
+.sbx{display:flex;gap:10px;align-items:center}
+.sbx .spk{width:40px;height:40px;border-radius:12px;background:var(--navy);color:#fff;display:grid;place-items:center;flex:none}
+:root[data-theme="dark"] .sbx .spk{background:#0F2A57}
+.sbx .spk svg{width:22px;height:22px}
+.react{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rb{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;border-radius:14px;background:var(--surface);border:2px solid var(--border);font-weight:700;font-size:15px;min-height:76px;justify-content:center}
+.rb .e{font-size:24px;line-height:1}
+.rb[aria-pressed="true"]{border-color:var(--action);background:var(--surface-2);color:var(--action)}
+.dots{display:flex;gap:6px;justify-content:center;margin:2px 0 12px}
+.dots i{width:7px;height:7px;border-radius:50%;background:var(--border)}
+.dots i.on{background:var(--action);width:20px;border-radius:9px}
+.dots i.done{background:var(--cyan)}
+
+/* app preview */
+.app{border:1.5px solid var(--border);border-radius:24px;overflow:hidden;background:var(--bg)}
+.app-h{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface);border-bottom:1px solid var(--border)}
+.app-b{padding:14px;display:flex;flex-direction:column;gap:12px}
+.owe{background:var(--hero);color:#fff;border-radius:18px;padding:16px}
+.owe .v{font-size:30px;font-weight:800;line-height:1.1}
+.owe small{color:var(--hero-muted)}
+.todo{display:grid;gap:6px}
+.todo div{display:flex;gap:8px;align-items:center;font-size:15px;font-weight:600}
+.todo .tick{width:22px;height:22px;border-radius:50%;border:2px solid var(--muted);display:grid;place-items:center;flex:none}
+.todo .done .tick{background:var(--in);border-color:var(--in);color:#fff}
+.todo .tick svg{width:14px;height:14px}
+.todo .done{color:var(--in)}
+.duecard{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+
+/* sheet */
+.scrim{position:fixed;inset:0;background:rgba(4,16,36,.5);z-index:40}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;background:var(--surface);border-radius:22px 22px 0 0;max-height:90vh;overflow:auto;padding:16px 16px calc(18px + env(safe-area-inset-bottom,0px));max-width:620px;margin:0 auto;animation:up .22s ease-out}
+@keyframes up{from{transform:translateY(40px)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){.sheet{animation:none}}
+.sheet .grab{width:44px;height:5px;border-radius:9px;background:var(--border);margin:-4px auto 12px}
+.big{font-size:34px;font-weight:800;text-align:center;margin:6px 0}
+.spin{width:52px;height:52px;border-radius:50%;border:5px solid var(--surface-2);border-top-color:var(--action);animation:sp 1s linear infinite;margin:20px auto}
+@keyframes sp{to{transform:rotate(360deg)}}
+.ok{width:76px;height:76px;border-radius:50%;background:var(--in-bg);color:var(--in);display:grid;place-items:center;margin:10px auto}
+.ok svg{width:40px;height:40px}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#0E1B2E;color:#fff;padding:12px 16px;border-radius:14px;z-index:60;font-size:15px;max-width:min(92vw,460px);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+:root[data-theme="dark"] .toast{background:#E8EEF7;color:#0E1B2E}
+
+/* feedback */
+.q{padding:16px 0;border-bottom:1px solid var(--border)}
+.q:last-child{border-bottom:0}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.scale button{min-height:56px;border-radius:12px;background:var(--surface-2);font-weight:800;font-size:18px;border:2px solid transparent}
+.scale button[aria-pressed="true"]{border-color:var(--action);color:var(--action);background:var(--surface)}
+.scale-l{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-top:4px}
+.iv{border-left:5px solid var(--warn)}
+.task{display:grid;gap:6px;padding:10px 0;border-bottom:1px solid var(--border)}
+.task:last-child{border-bottom:0}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{text-align:left;color:var(--muted);font-size:13px;padding:8px 6px;border-bottom:1px solid var(--border)}
+td{padding:10px 6px;border-bottom:1px solid var(--border);vertical-align:top}
+.scrollx{overflow-x:auto}
+.sum{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:15px}
+.sum span:nth-child(odd){color:var(--muted)}
+.guide ol{padding-left:20px;margin:0} .guide li{margin:0 0 10px}
+.say{background:var(--surface-2);border-radius:12px;padding:10px 12px;font-style:italic;margin:6px 0}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ==================================================================
+   Vyapaar Pay – guided field demo (Velocity Squad, IIM Bangalore)
+   1) explain each feature → 2) shop owner sets up their own shop
+   3) record reactions & task success → 4) export responses (CSV/JSON)
+   Everything stays in this browser until you download it.
+   ================================================================== */
+const LOGO_LIGHT="data:image/png;base64,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", LOGO_DARK="data:image/png;base64,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";
+const P={
+  send:'<path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/>',
+  hand:'<path d="M11 17l2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2"/><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path d="M3 4h8"/>',
+  split:'<path d="M16 3h5v5M8 3H3v5M21 3l-7 7M3 3l7 7M12 22v-8"/>',
+  bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+  wa:'<path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9z"/>',
+  book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
+  gauge:'<path d="M12 14l4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/>',
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  play:'<circle cx="12" cy="12" r="10"/><path d="m10 8 6 4-6 4z"/>',
+  list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  help:'<circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
+  app:'<rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  back:'<path d="m15 18-6-6 6-6"/>',
+  next:'<path d="m9 18 6-6-6-6"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  down:'<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
+  speaker:'<path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>',
+  clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  eye:'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+  trash:'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>',
+  info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
+};
+const ic=(n,c='i')=>`<svg class="${c}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n]||''}</svg>`;
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const inr=n=>'₹'+Math.round(Math.max(0,n)).toLocaleString('en-IN');
+const DAY=864e5, today0=(()=>{const d=new Date();d.setHours(0,0,0,0);return d.getTime()})();
+const fmtD=(ts,o={day:'numeric',month:'short'})=>new Date(ts).toLocaleDateString('en-IN',o);
+const ini=s=>String(s).replace(/[^A-Za-zऀ-ॿ ]/g,'').split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase()||'?';
+const uid=()=>Math.random().toString(36).slice(2,8);
+
+/* ---------- storage (safe) ---------- */
+const KEY='vyapaar-field-demo-v1'; let MEM=[];
+const loadAll=()=>{ try{ return JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){ return MEM; } };
+const saveAll=v=>{ MEM=v; try{ localStorage.setItem(KEY,JSON.stringify(v)); }catch(e){} };
+const pref=(k,v)=>{ try{ if(v===undefined) return localStorage.getItem(KEY+'-'+k); localStorage.setItem(KEY+'-'+k,v); }catch(e){ return null; } };
+
+/* ---------- what we show ---------- */
+const TYPES=['Kirana','Medical store','Hardware','Restaurant / food','Salon','Wholesaler','Other'];
+const SUGGEST={ 'Kirana':['Milk & dairy','FMCG distributor','Rice & grains','Oil','Vegetables','Packaging'], 'Medical store':['Pharma distributor','Surgical items','Generics','OTC & wellness'],
+  'Hardware':['Electricals','Pipes & fittings','Paints','Steel & cement','Transport'], 'Restaurant / food':['Vegetables','Meat & chicken','Dairy','Gas cylinders','Groceries','Packaging'],
+  'Salon':['Salon products','Hair products','Laundry','Water'], 'Wholesaler':['Brand / company','Super stockist','Transport','Loaders'], 'Other':['Stock','Raw material','Transport','Services'] };
+const PAYVIA=['PhonePe','Google Pay','Paytm','Other UPI app','Cash','Cheque','Bank transfer'];
+const F=[
+  {id:'pay',  short:'One-tap supplier pay', icon:'send',  title:'Pay any supplier in one tap', hi:'Supplier ek baar save karo – agli baar sirf ek tap.',
+   body:'Save each supplier once by scanning the QR they already have – any UPI QR works. Next time, tap their name, check the amount and pay. The receipt goes to them on WhatsApp.', mock:mockPay},
+  {id:'khata',short:'Udhaar written for both', icon:'hand', title:'Udhaar, written down for both sides', hi:'Udhaar ka hisaab – dono ke paas, ek jaisa.',
+   body:'When a supplier gives goods on credit, they send the bill in the app: amount, how many days interest-free, and the interest after that. You accept once. From then on you both see the same record – no arguments later.', mock:mockKhata},
+  {id:'parts',short:'Pay in parts', icon:'split', title:'Pay in parts, any time', hi:'Poora nahi? Thoda abhi, baaki baad mein.',
+   body:'Pay any amount whenever you have cash. Interest (only if you are late) is cleared first, then the bill. The balance stays on the khata and updates for your supplier too.', mock:mockParts},
+  {id:'remind',short:'Reminders & more time', icon:'bell', title:'Reminders – and asking for more time', hi:'Soundbox yaad dilayega. Time chahiye? App mein maango.',
+   body:'Your Soundbox reads out tomorrow’s dues every morning. If you need a few more days, ask in the chat – the supplier says yes or no with one tap, and the new date is saved for both.', mock:mockRemind},
+  {id:'link', short:'Works if supplier isn’t on Paytm', icon:'wa', title:'Works even if your supplier isn’t on Paytm', hi:'Supplier ke paas Paytm nahi? WhatsApp link se chalega.',
+   body:'They get the bill as a WhatsApp link, check the terms, accept with an OTP and can pay with whichever UPI app they use. Your record updates either way.', mock:mockLink},
+  {id:'book', short:'Hisaab done for you', icon:'book', title:'Your hisaab, done for you', hi:'Har payment apne aap likha jayega – CA ko ek tap mein.',
+   body:'Every payment is saved with what it was for and its bill. See money in and money out each day, log cash and cheques too, and send a clean statement to your CA in one tap.', mock:mockBook},
+  {id:'score',short:'Score & credit', icon:'gauge', title:'Paying on time builds credit', hi:'Time pe payment = aapka Vyapaar Score = loan ke mauke.',
+   body:'Paying agreed bills on time and steady daily sales build a Vyapaar Score. Only if you say yes, partner lenders can see it and offer working capital. Nothing is shared without your OK.', mock:mockScore},
+  {id:'supp', short:'Supplier side', icon:'users', title:'Your supplier gets a clear view too', hi:'Supplier ko bhi pata – kaun kitna dena hai, kab tak.',
+   body:'Suppliers see who owes what and how late, send reminders, and record cash or cheque payments. Bills you accepted can even help them get paid early by a lender.', mock:mockSupp},
+];
+const TASKS=[['sup','Added a supplier'],['due','Added an udhaar'],['pay','Paid part of a bill'],['ext','Asked for more days'],['view','Understood the supplier’s view']];
+const Q=[
+  {id:'use',     q:'Would you use this to manage what you pay your suppliers?', type:'one', opts:['Yes, definitely','Maybe','No']},
+  {id:'useful',  q:'Which parts would help you the most?', type:'many', opts:F.map(f=>f.short)},
+  {id:'confusing',q:'Was anything confusing or not useful?', type:'many', opts:[...F.map(f=>f.short),'Nothing']},
+  {id:'supplier',q:'Would your main supplier agree to keep the udhaar in an app?', type:'one', opts:['Yes','Maybe','No','Don’t know']},
+  {id:'interest',q:'If interest after the due date is agreed upfront, is that fair?', type:'one', opts:['Yes','Only if it’s small','No']},
+  {id:'share',   q:'Would you let us share your record with a lender to get credit?', type:'one', opts:['Yes','Maybe','No']},
+  {id:'barriers',q:'What could stop you from using it?', type:'many', opts:['Trust','Too many steps','Supplier won’t use it','Interest worry','Privacy of my data','Happy with how I do it now','Phone / internet issues','Other']},
+  {id:'ease',    q:'How easy was it to use?', type:'scale', lo:'Very hard', hi:'Very easy'},
+  {id:'quote',   q:'In their own words – what did they say?', type:'text', ph:'Write it exactly as they said it'},
+];
+
+/* ---------- state ---------- */
+const S={screen:'home', fi:0, ti:0, sheet:null, theme:pref('theme')||'system', supForm:null, dueForm:null};
+let X=null;               // current session
+function newSession(){ return {id:'S'+Date.now().toString(36).toUpperCase(), started:Date.now(), ended:null, status:'in progress',
+  interviewer:pref('interviewer')||'', area:pref('area')||'', vendor:'', vtype:'', consent:false, recording:false,
+  react:{}, shop:{name:'',type:''}, sups:[], dues:[], log:[], tasks:{}, fb:{}, notes:''}; }
+function persist(){ if(!X) return; const all=loadAll(); const i=all.findIndex(s=>s.id===X.id); if(i>=0) all[i]=X; else all.unshift(X); saveAll(all); }
+const did=k=>X.log.some(l=>l.t===k);
+function logE(t,d){ X.log.push({t,ts:Date.now(),d:d||''}); persist(); }
+
+/* ---------- mocks for the tour ---------- */
+function mockPay(){ return `<div class="tiles">${[['Nandini Milk','12,400'],['Sri Lakshmi Rice','54,000'],['Hassan Oil','26,800']].map(([n,a])=>`<div class="tile"><div class="av">${ini(n)}</div>${n}<span>₹${a}</span></div>`).join('')}</div>
+  <div class="mcard" style="margin-top:10px"><div class="mrow"><span>Paying</span><b>Nandini Milk</b></div><div class="mrow"><span>Amount</span><b>₹12,400</b></div><div class="mrow"><span>Receipt</span><b class="amt-in">Sent on WhatsApp</b></div></div>`; }
+function mockKhata(){ return `<div class="mcard"><div class="row between"><b>Manjunath FMCG → your shop</b><span class="pill p-warn">Waiting for you</span></div>
+  <div style="font-size:28px;font-weight:800;margin:4px 0">₹20,900</div>
+  <div class="mrow"><span>Interest-free</span><b>10 days</b></div><div class="mrow"><span>After that</span><b>1% a month</b></div><div class="mrow"><span>Pay early</span><b>1% off</b></div>
+  <div class="row" style="gap:8px;margin-top:8px"><span class="btn sm">${ic('check')}Accept</span><span class="btn sec sm">Ask for more days</span></div></div>`; }
+function mockParts(){ return `<div class="mcard"><div class="mrow"><span>Bill</span><b>₹20,900</b></div><div class="bar" style="margin:8px 0"><i style="width:48%;background:var(--in)"></i></div>
+  <div class="mrow"><span>Paid today</span><b class="amt-in">₹10,000</b></div><div class="mrow"><span>Still on khata</span><b>₹10,900</b></div><div class="tiny muted">Updated for your supplier at the same moment.</div></div>`; }
+function mockRemind(){ return `<div class="mcard sbx"><span class="spk">${ic('speaker')}</span><div><div class="tiny muted">Paytm Soundbox · 7:00 am</div><b>“Kal Manjunath FMCG ka ₹20,900 due hai”</b></div></div>
+  <div class="bubble b-me">Can I get 7 more days? Stock is still selling.</div><div class="bubble b-them">OK – 7 more days. New date 22 Oct.</div>`; }
+function mockLink(){ return `<div class="wa"><b>WhatsApp</b><div style="margin-top:6px;background:rgba(255,255,255,.6);border-radius:10px;padding:10px;font-size:15px">Raju General Stores sent you a bill on credit: <b>₹20,900</b>, due 17 Oct, then 1%/month.<br><u>Open to accept</u> · OTP 4 8 1 9</div></div>
+  <div class="tiny muted" style="margin-top:8px">They can pay from any UPI app – the khata still updates for you.</div>`; }
+function mockBook(){ const b=[[6,4],[8,3],[5,6],[9,4],[7,8],[8,3],[6,2]]; return `<div class="mcard"><div class="row between"><b>This week</b><span class="tiny muted"><span style="color:var(--in)">■</span> in &nbsp;<span style="color:var(--out)">■</span> out</span></div>
+  <div style="display:flex;gap:8px;align-items:flex-end;height:80px;margin:10px 0">${b.map(([i,o])=>`<div style="flex:1;display:flex;gap:2px;align-items:flex-end;height:100%"><i style="flex:1;height:${i*10}%;background:var(--in);border-radius:3px"></i><i style="flex:1;height:${o*10}%;background:var(--out);border-radius:3px"></i></div>`).join('')}</div>
+  <span class="btn sec sm">${ic('down')}Send to CA</span></div>`; }
+function mockScore(){ return `<div class="mcard"><div class="row" style="gap:14px"><div style="font-size:40px;font-weight:800;color:var(--action)">712</div><div><b>Vyapaar Score</b><div class="tiny muted">300–900 · built from your own activity</div></div></div>
+  ${[['Paying suppliers on time',80],['Steady daily sales',74],['Money in vs out',90]].map(([l,v])=>`<div class="mrow"><span>${l}</span><b>${v}/100</b></div><div class="bar" style="height:6px"><i style="width:${v}%;background:var(--action)"></i></div>`).join('')}
+  <div class="note" style="margin-top:10px">${ic('shield')}<span>Shared with a lender only if you say yes.</span></div></div>`; }
+function mockSupp(){ return `<div class="mcard"><b>To collect from shops</b><div style="font-size:26px;font-weight:800;margin:2px 0 8px">₹6,01,123</div>
+  ${[['Not yet due',60,'var(--in)'],['1–7 days late',25,'var(--warn)'],['8–30 days late',15,'var(--out)']].map(([l,v,c])=>`<div class="mrow"><span>${l}</span><span class="bar" style="width:50%;height:9px;align-self:center"><i style="width:${v*1.6}%;background:${c}"></i></span></div>`).join('')}</div>`; }
+
+/* ---------- maths for udhaar ---------- */
+function dueAt(d){ return d.givenAt+(d.freeDays+d.ext)*DAY; }
+function lateDays(d){ return Math.max(0,Math.floor((today0-dueAt(d))/DAY)); }
+function outstanding(d){ return Math.max(0,d.amount-d.paid); }
+function interest(d){ const ld=lateDays(d); if(!ld||!d.rate) return 0; return Math.max(0,Math.round(outstanding(d)*d.rate/100*ld/30)-d.intPaid); }
+function owed(d){ return outstanding(d)+interest(d); }
+const supName=id=>{ const s=X.sups.find(x=>x.id===id); return s?s.name:'Supplier'; };
+
+/* ---------- render ---------- */
+const app=document.getElementById('app');
+function applyTheme(){ const r=document.documentElement; if(S.theme==='system') r.removeAttribute('data-theme'); else r.setAttribute('data-theme',S.theme); }
+function render(){
+  applyTheme();
+  const v={home,guide,sessions,setup,tour,tryIntro,tryShop,trySups,tryDues,tryApp,feedback,done}[S.screen]();
+  app.innerHTML=topBar()+`<main>${v.body}</main>`+(v.foot?`<div class="foot"><div class="foot-in">${v.foot}</div></div>`:'')+sheet();
+  if(S._focus){ const el=document.getElementById(S._focus); if(el) el.focus(); S._focus=null; }
+}
+function phase(){ return ({setup:0,tour:0,tryIntro:1,tryShop:1,trySups:1,tryDues:1,tryApp:1,feedback:2,done:3})[S.screen]; }
+function topBar(){
+  const inS=X&&phase()!==undefined; const ph=phase();
+  const fill=i=> i<ph?100: i>ph?0 : S.screen==='tour'?Math.round((S.fi+1)/F.length*100) : S.screen==='setup'?5 : i===1?({tryIntro:10,tryShop:30,trySups:55,tryDues:75,tryApp:95})[S.screen] : 50;
+  return `<header class="top"><div class="top-in"><img class="logo-light" src="${LOGO_LIGHT}" alt="Paytm"><img class="logo-dark" src="${LOGO_DARK}" alt="Paytm"><span class="ttl">Vyapaar Pay</span><span class="sp"></span>
+    ${inS&&ph<3?`<span class="timer" id="timer">${mins()}</span><button class="ib" data-a="exit" aria-label="Save and exit" title="Save and exit">${ic('x')}</button>`
+      :`<button class="ib" data-a="theme" aria-label="Change theme" title="Theme">${ic(document.documentElement.getAttribute('data-theme')==='dark'||(S.theme==='system'&&matchMedia('(prefers-color-scheme: dark)').matches)?'sun':'moon')}</button>`}</div>
+    ${inS&&ph<3?`<div class="steps">${['1 · See the features','2 · Try it yourself','3 · Your feedback'].map((l,i)=>`<div class="${i===ph?'on':''}"><i><b style="width:${fill(i)}%"></b></i>${l}</div>`).join('')}</div>`:''}</header>`;
+}
+const mins=()=>{ if(!X) return ''; const s=Math.round((Date.now()-X.started)/1000); return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; };
+setInterval(()=>{ const t=document.getElementById('timer'); if(t) t.textContent=mins(); },1000);
+
+/* ---------- screens ---------- */
+function home(){
+  const n=loadAll().length; const open=loadAll().find(s=>s.status==='in progress');
+  return {body:`<div class="stack">
+    <div class="hero"><div style="position:relative;z-index:1"><div class="kicker" style="color:var(--cyan)">FIELD DEMO</div><h1 style="color:#fff">Show it to a shop owner</h1>
+      <p>About 10 minutes: walk through the features, let them set up their own shop from scratch, then note what worked and what didn’t.</p></div></div>
+    <button class="btn block" data-a="start">${ic('play')}Start a new session</button>
+    ${open?`<button class="btn sec block" data-a="resume" data-id="${open.id}">Continue last session (${esc(open.shop.name||open.vendor||open.id)})</button>`:''}
+    <div class="menu">
+      <button class="mi" data-a="go" data-s="guide"><span class="mic">${ic('help')}</span><div><b>How to run a session</b><small>Steps, what to say, what to watch for</small></div>${ic('next')}</button>
+      <button class="mi" data-a="go" data-s="sessions"><span class="mic">${ic('list')}</span><div><b>Saved sessions (${n})</b><small>See answers, download CSV or JSON</small></div>${ic('next')}</button>
+      <a class="mi" href="../index.html"><span class="mic">${ic('app')}</span><div><b>Open the full app</b><small>All six business types, with sample data</small></div>${ic('next')}</a>
+    </div>
+    <div class="note">${ic('info')}<span>Nothing here is real money. Answers stay on this device until you download them.</span></div></div>`};
+}
+function guide(){
+  return {body:`<div class="stack guide"><button class="btn ghost" data-a="go" data-s="home" style="align-self:flex-start">${ic('back')}Back</button><h1>How to run a session</h1>
+    <div class="card"><h3>Before you start</h3><ol>
+      <li>Pick a quiet time (2–4 pm works best). One person talks, one notes.</li>
+      <li>Ask for consent – and separately for recording, if you record.<div class="say">“Hum IIM Bangalore ke students hain. Ek naya app idea dikhana hai – 10 minute. Koi asli paisa nahi, koi sign-up nahi. Kya hum aapka reaction record kar sakte hain?”</div></li>
+      <li>Hand them the phone if they are comfortable. Let them tap.</li></ol></div>
+    <div class="card"><h3>1 · See the features (3–4 min)</h3><ol><li>Read the bold line on each screen, show the picture, then ask: <b>“Kya yeh aapke kaam ka hai?”</b></li><li>Tap their answer – useful, not sure, not for me. Add a note when they say something specific.</li></ol></div>
+    <div class="card"><h3>2 · Try it yourself (4–5 min)</h3><ol><li>The app starts empty, like a new user. Ask them to add one or two real suppliers and one udhaar they have right now (rough numbers are fine).</li>
+      <li>Then ask them to: pay part of a bill, ask for more days, and look at what their supplier would see. The checklist at the top shows what’s done.</li>
+      <li><b>Don’t help unless they are stuck for 10+ seconds.</b> Note where they get stuck.</li></ol></div>
+    <div class="card"><h3>3 · Feedback (2 min)</h3><ol><li>Ask the questions in order, in their language. Write one quote exactly as they said it.</li><li>Mark how each task went (alone / with help / couldn’t).</li></ol></div>
+    <div class="card"><h3>After</h3><ol><li>Download the CSV from Saved sessions at the end of the day.</li><li>Use “Reset” only after downloading – it deletes everything on this device.</li></ol></div></div>`};
+}
+function sessions(){
+  const all=loadAll();
+  const rows=all.map(s=>`<tr><td><b>${esc(s.shop.name||s.vendor||'—')}</b><div class="tiny muted">${esc(s.shop.type||s.vtype||'')}</div></td><td>${fmtD(s.started)}<div class="tiny muted">${Math.max(1,Math.round(((s.ended||Date.now())-s.started)/60000))} min</div></td><td>${esc((s.fb.use)||'—')}</td><td><span class="pill ${s.status==='complete'?'p-in':'p-warn'}">${s.status}</span></td>
+    <td><button class="btn ghost sm" data-a="open" data-id="${s.id}">${s.status==='complete'?'View':'Continue'}</button></td></tr>`).join('');
+  return {body:`<div class="stack"><button class="btn ghost" data-a="go" data-s="home" style="align-self:flex-start">${ic('back')}Back</button><h1>Saved sessions</h1>
+    ${all.length?`<div class="card scrollx"><table><thead><tr><th>Shop</th><th>When</th><th>Would use</th><th>Status</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="row" style="gap:10px;flex-wrap:wrap"><button class="btn grow" data-a="csv-all">${ic('down')}Download all (CSV)</button><button class="btn sec grow" data-a="json-all">${ic('down')}JSON</button></div>
+    <button class="btn ghost" data-a="wipe" style="align-self:flex-start;color:var(--out)">${ic('trash')}Reset – delete all sessions on this device</button>`
+    :`<div class="card" style="text-align:center"><p class="muted">No sessions yet.</p><button class="btn" data-a="start">${ic('play')}Start the first one</button></div>`}</div>`};
+}
+function setup(){
+  const ok=X.consent;
+  return {body:`<h1>Before we begin</h1><p class="lead">Filled by the interviewer. Takes 20 seconds.</p>
+    <div class="field"><label for="iv">Your name (interviewer)</label><input id="iv" data-f="interviewer" value="${esc(X.interviewer)}" placeholder="e.g. Ishan"></div>
+    <div class="field"><label for="ar">Area / market</label><input id="ar" data-f="area" value="${esc(X.area)}" placeholder="e.g. Chickpet, Bengaluru"></div>
+    <div class="field"><label for="vn">Shop owner’s name (optional)</label><input id="vn" data-f="vendor" value="${esc(X.vendor)}" placeholder="Leave blank if they prefer"></div>
+    <div class="field"><span class="qlabel">Type of business</span><div class="chips">${TYPES.map(t=>`<button class="chip" data-a="vtype" data-v="${t}" aria-pressed="${X.vtype===t}">${t}</button>`).join('')}</div></div>
+    <div class="stack" style="gap:10px"><button class="check" role="checkbox" aria-checked="${X.consent}" data-a="flip" data-k="consent"><span class="box">${X.consent?ic('check'):''}</span><span><b>They agreed to take part.</b><br><span class="small muted">I explained it’s a student project, nothing is real money and they can stop any time.</span></span></button>
+    <button class="check" role="checkbox" aria-checked="${X.recording}" data-a="flip" data-k="recording"><span class="box">${X.recording?ic('check'):''}</span><span><b>They agreed to be recorded</b> <span class="small muted">(audio/video – tick only if you are recording)</span></span></button></div>`,
+   foot:`<button class="btn sec" data-a="exit">${ic('back')}</button><button class="btn grow" data-a="to" data-s="tour" ${ok?'':'disabled'}>Start the feature tour ${ic('next')}</button>`};
+}
+function tour(){
+  const f=F[S.fi]; const r=X.react[f.id]||{};
+  return {body:`<div class="dots">${F.map((x,i)=>`<i class="${i===S.fi?'on':X.react[x.id]&&X.react[x.id].r?'done':''}"></i>`).join('')}</div>
+    <div class="kicker">FEATURE ${S.fi+1} OF ${F.length}</div><h2>${f.title}</h2><div class="hinglish">${f.hi}</div>
+    <div class="mock">${f.mock()}</div>
+    <p style="margin:0 0 18px">${f.body}</p>
+    <div class="card"><div class="qlabel">Is this useful for your shop?</div>
+      <div class="react">${[['yes','👍','Useful'],['maybe','🤔','Not sure'],['no','👎','Not for me']].map(([v,e,l])=>`<button class="rb" data-a="react" data-v="${v}" aria-pressed="${r.r===v}"><span class="e" aria-hidden="true">${e}</span>${l}</button>`).join('')}</div>
+      <div class="field" style="margin:12px 0 0"><label for="rn" class="small">What did they say? (optional)</label><input id="rn" data-react-note="${f.id}" value="${esc(r.note||'')}" placeholder="e.g. “Udhaar ka hisaab toh roz ka jhagda hai”"></div></div>`,
+   foot:`<button class="btn sec" data-a="tour-back" aria-label="Back">${ic('back')}</button><button class="btn grow" data-a="tour-next">${S.fi<F.length-1?'Next feature':'Now try it yourself'} ${ic('next')}</button>`};
+}
+function tryIntro(){
+  return {body:`<div class="kicker">PART 2</div><h1>Now set it up for your shop</h1><p class="lead">The app starts empty – just like it would for any new user. Add a supplier or two and one udhaar you have right now. Rough numbers are fine.</p>
+    <div class="card stack" style="gap:10px">${[['1','Your shop'],['2','Your suppliers'],['3','What you owe them'],['4','Try paying, asking for time, and the supplier’s view']].map(([n,l])=>`<div class="row"><span class="av" style="width:34px;height:34px">${n}</span><b>${l}</b></div>`).join('')}</div>
+    <div class="note" style="margin-top:14px">${ic('info')}<span>Interviewer: hand over the phone now. Help only if they are stuck.</span></div>`,
+   foot:`<button class="btn sec" data-a="to" data-s="tour" data-fi="${F.length-1}">${ic('back')}</button><button class="btn grow" data-a="to" data-s="tryShop">Start ${ic('next')}</button>`};
+}
+function tryShop(){
+  const ok=X.shop.name.trim()&&X.shop.type;
+  return {body:`<div class="kicker">STEP 1 OF 4</div><h2>Your shop</h2><p class="lead">What should we call your business?</p>
+    <div class="field"><label for="sn">Shop name</label><input id="sn" data-shop="name" value="${esc(X.shop.name)}" placeholder="e.g. Raju General Stores"></div>
+    <div class="field"><span class="qlabel">What do you sell?</span><div class="chips">${TYPES.map(t=>`<button class="chip" data-a="stype" data-v="${t}" aria-pressed="${X.shop.type===t}">${t}</button>`).join('')}</div></div>`,
+   foot:`<button class="btn sec" data-a="to" data-s="tryIntro">${ic('back')}</button><button class="btn grow" data-a="to" data-s="trySups" id="nx" ${ok?'':'disabled'}>Next ${ic('next')}</button>`};
+}
+function trySups(){
+  const f=S.supForm; const sug=SUGGEST[X.shop.type]||SUGGEST.Other;
+  const list=X.sups.map(s=>`<div class="li"><div class="av">${ini(s.name)}</div><div class="body"><b>${esc(s.name)}</b><small>${esc(s.what||'—')} · pays by ${esc(s.via||'—')} · ${s.credit?s.credit+' days credit':'no credit'}</small></div><button class="ib" data-a="delsup" data-id="${s.id}" aria-label="Remove ${esc(s.name)}">${ic('trash')}</button></div>`).join('');
+  const form=f?`<div class="card"><h3>Add a supplier</h3>
+    <div class="field"><label for="sfn">Supplier name</label><input id="sfn" data-sf="name" value="${esc(f.name)}" placeholder="e.g. Nandini Milk Agency"></div>
+    <div class="field"><span class="qlabel">What do they supply?</span><div class="chips">${sug.map(x=>`<button class="chip" data-a="sf" data-k="what" data-v="${x}" aria-pressed="${f.what===x}">${x}</button>`).join('')}</div></div>
+    <div class="field"><span class="qlabel">How do you pay them today?</span><div class="chips">${PAYVIA.map(x=>`<button class="chip" data-a="sf" data-k="via" data-v="${x}" aria-pressed="${f.via===x}">${x}</button>`).join('')}</div></div>
+    <div class="field"><span class="qlabel">Do they give you credit (udhaar)?</span><div class="chips">${[0,7,15,30,45].map(x=>`<button class="chip" data-a="sf" data-k="credit" data-v="${x}" aria-pressed="${f.credit===x}">${x?x+' days':'No'}</button>`).join('')}</div></div>
+    <div class="row" style="gap:10px"><button class="btn sec" data-a="supcancel">Cancel</button><button class="btn grow" data-a="supsave" id="sfsave" ${f.name.trim()?'':'disabled'}>${ic('check')}Save supplier</button></div></div>`
+    :`<button class="btn sec block" data-a="supadd">${ic('plus')}${X.sups.length?'Add another supplier':'Add your first supplier'}</button>`;
+  return {body:`<div class="kicker">STEP 2 OF 4</div><h2>Who do you buy from?</h2><p class="lead">Add the suppliers you pay most often.</p>
+    <div class="stack">${X.sups.length?`<div class="card list">${list}</div>`:''}${form}
+    ${!X.sups.length&&!f?`<button class="btn ghost" data-a="sample" style="align-self:center">Prefer not to share? Use an example supplier</button>`:''}</div>`,
+   foot:`<button class="btn sec" data-a="to" data-s="tryShop">${ic('back')}</button><button class="btn grow" data-a="to" data-s="tryDues" ${X.sups.length&&!f?'':'disabled'}>Next ${ic('next')}</button>`};
+}
+function tryDues(){
+  const f=S.dueForm;
+  const list=X.dues.map(d=>`<div class="li"><div class="av">${ini(supName(d.sid))}</div><div class="body"><b>${esc(supName(d.sid))} · ${inr(d.amount)}</b><small>Due ${fmtD(dueAt(d))} · ${d.rate?d.rate+'%/month after':'no interest'}</small></div><button class="ib" data-a="deldue" data-id="${d.id}" aria-label="Remove">${ic('trash')}</button></div>`).join('');
+  let form='';
+  if(f){ const prev=f.amount?{givenAt:today0-f.ago*DAY,freeDays:f.free,ext:0,amount:+f.amount,paid:0,intPaid:0,rate:f.rate}:null;
+    form=`<div class="card"><h3>Add an udhaar</h3>
+    <div class="field"><span class="qlabel">Which supplier?</span><div class="chips">${X.sups.map(s=>`<button class="chip" data-a="df" data-k="sid" data-v="${s.id}" aria-pressed="${f.sid===s.id}">${esc(s.name)}</button>`).join('')}</div></div>
+    <div class="field"><label for="dfa">How much do you owe?</label><input id="dfa" inputmode="numeric" data-df="amount" value="${f.amount||''}" placeholder="₹ amount"></div>
+    <div class="field"><span class="qlabel">When did you get the goods?</span><div class="chips">${[[0,'Today'],[3,'3 days ago'],[7,'A week ago'],[15,'2 weeks ago'],[30,'A month ago']].map(([v,l])=>`<button class="chip" data-a="df" data-k="ago" data-v="${v}" aria-pressed="${f.ago===v}">${l}</button>`).join('')}</div></div>
+    <div class="field"><span class="qlabel">Days to pay without interest</span><div class="chips">${[7,15,30,45].map(v=>`<button class="chip" data-a="df" data-k="free" data-v="${v}" aria-pressed="${f.free===v}">${v} days</button>`).join('')}</div></div>
+    <div class="field"><span class="qlabel">Interest if paid late (as agreed with supplier)</span><div class="chips">${[0,1,1.5,2].map(v=>`<button class="chip" data-a="df" data-k="rate" data-v="${v}" aria-pressed="${f.rate===v}">${v?v+'% a month':'None'}</button>`).join('')}</div></div>
+    <div class="note" id="dprev">${ic('clock')}<span>${prev?duePreview(prev):'Enter an amount to see the due date.'}</span></div>
+    <div class="row" style="gap:10px;margin-top:12px"><button class="btn sec" data-a="duecancel">Cancel</button><button class="btn grow" data-a="duesave" id="dfsave" ${f.amount>0&&f.sid?'':'disabled'}>${ic('check')}Save udhaar</button></div></div>`; }
+  else form=`<button class="btn sec block" data-a="dueadd">${ic('plus')}${X.dues.length?'Add another udhaar':'Add an udhaar'}</button>`;
+  return {body:`<div class="kicker">STEP 3 OF 4</div><h2>What do you owe right now?</h2><p class="lead">Add one udhaar you have today. The app works out the due date and any interest.</p>
+    <div class="stack">${X.dues.length?`<div class="card list">${list}</div>`:''}${form}
+    ${!X.dues.length&&!f?`<button class="btn ghost" data-a="sampledue" style="align-self:center">Nothing owed? Use an example udhaar</button>`:''}</div>`,
+   foot:`<button class="btn sec" data-a="to" data-s="trySups">${ic('back')}</button><button class="btn grow" data-a="to" data-s="tryApp" ${X.dues.length&&!f?'':'disabled'}>See my Vyapaar Pay ${ic('next')}</button>`};
+}
+function duePreview(d){ const ld=lateDays(d); const pd=d.rate?Math.round(d.amount*d.rate/100/30):0;
+  return ld?`Was due <b>${fmtD(dueAt(d))}</b> – <b>${ld} days late</b>.${d.rate?` Interest so far ${inr(interest(d))} (+${inr(pd)} a day).`:' No interest agreed.'}`
+           :`Due <b>${fmtD(dueAt(d),{weekday:'short',day:'numeric',month:'short'})}</b> – no interest till then.${d.rate?` After that +${inr(pd)} a day.`:''}`; }
+function tryApp(){
+  const tot=X.dues.reduce((a,d)=>a+owed(d),0), int=X.dues.reduce((a,d)=>a+interest(d),0);
+  const todo=[['pay','Pay part of a bill'],['ext','Ask for more days'],['view','See what your supplier sees']];
+  const cards=X.dues.slice().sort((a,b)=>dueAt(a)-dueAt(b)).map(d=>{ const ld=lateDays(d), o=owed(d), closed=o<=0;
+    return `<div class="duecard"><div class="row between"><b>${esc(supName(d.sid))}</b>${closed?`<span class="pill p-in">${ic('check')}Paid</span>`:ld?`<span class="pill p-out">${ld} days late</span>`:`<span class="pill p-info">Due ${fmtD(dueAt(d))}</span>`}</div>
+      <div style="font-size:26px;font-weight:800;margin:4px 0" class="num">${inr(o)}</div>
+      <div class="small muted">${d.paid?`${inr(d.paid+d.intPaid)} paid · `:''}${interest(d)?`includes ${inr(interest(d))} interest · `:''}${d.rate?d.rate+'%/month after due':'no interest'}${d.ext?` · +${d.ext} days given`:''}</div>
+      ${closed?'':`<div class="acts"><button class="btn sm" data-a="pay" data-id="${d.id}">${ic('send')}Pay</button><button class="btn sec sm" data-a="ext" data-id="${d.id}">${ic('clock')}More days</button><button class="btn sec sm" data-a="view" data-id="${d.id}">${ic('eye')}Supplier’s view</button></div>`}</div>`; }).join('');
+  return {body:`<div class="kicker">STEP 4 OF 4</div><h2>Your Vyapaar Pay</h2><p class="lead" style="margin-bottom:12px">Built from what you just entered. Try these:</p>
+    <div class="card todo" style="margin-bottom:14px">${todo.map(([k,l])=>`<div class="${did(k)?'done':''}"><span class="tick">${did(k)?ic('check'):''}</span>${l}</div>`).join('')}</div>
+    <div class="app"><div class="app-h"><span class="av" style="width:36px;height:36px">${ini(X.shop.name)}</span><div style="flex:1;min-width:0"><b style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(X.shop.name)}</b><span class="tiny muted">${esc(X.shop.type)}</span></div>${ic('bell')}</div>
+      <div class="app-b"><div class="owe"><small>You owe suppliers</small><div class="v num">${inr(tot)}</div><small>${X.dues.length} bill${X.dues.length>1?'s':''}${int?` · ${inr(int)} interest so far`:' · no interest yet'}</small></div>
+      ${cards}
+      <div class="mcard sbx"><span class="spk">${ic('speaker')}</span><div><div class="tiny muted">Soundbox, tomorrow 7:00 am</div><b>“${esc(soundLine())}”</b></div></div></div></div>`,
+   foot:`<button class="btn sec" data-a="to" data-s="tryDues">${ic('back')}</button><button class="btn grow" data-a="to" data-s="feedback">I’m done – give feedback ${ic('next')}</button>`};
+}
+function soundLine(){ const d=X.dues.filter(x=>owed(x)>0).sort((a,b)=>dueAt(a)-dueAt(b))[0]; if(!d) return 'Aaj koi payment due nahi hai'; const n=supName(d.sid).split(' ').slice(0,2).join(' ');
+  return lateDays(d)?`${n} ka ${inr(owed(d))} ${lateDays(d)} din se due hai`:`${n} ka ${inr(owed(d))} ${fmtD(dueAt(d))} ko due hai`; }
+function feedback(){
+  const fb=X.fb;
+  const qs=Q.map(q=>{ let inp='';
+    if(q.type==='one') inp=`<div class="chips">${q.opts.map(o=>`<button class="chip" data-a="fb1" data-q="${q.id}" data-v="${esc(o)}" aria-pressed="${fb[q.id]===o}">${o}</button>`).join('')}</div>`;
+    if(q.type==='many') inp=`<div class="chips">${q.opts.map(o=>`<button class="chip" data-a="fbm" data-q="${q.id}" data-v="${esc(o)}" aria-pressed="${(fb[q.id]||[]).includes(o)}">${o}</button>`).join('')}</div>${q.id==='barriers'&&(fb.barriers||[]).includes('Other')?`<div class="field" style="margin:10px 0 0"><input data-fbt="barrierOther" value="${esc(fb.barrierOther||'')}" placeholder="What else?"></div>`:''}`;
+    if(q.type==='scale') inp=`<div class="scale">${[1,2,3,4,5].map(n=>`<button data-a="fb1" data-q="${q.id}" data-v="${n}" aria-pressed="${String(fb[q.id])===String(n)}">${n}</button>`).join('')}</div><div class="scale-l"><span>${q.lo}</span><span>${q.hi}</span></div>`;
+    if(q.type==='text') inp=`<div class="field" style="margin:0"><textarea data-fbt="${q.id}" placeholder="${q.ph}">${esc(fb[q.id]||'')}</textarea></div>`;
+    return `<div class="q"><div class="qlabel">${q.q}</div>${inp}</div>`; }).join('');
+  const tasks=TASKS.map(([k,l])=>{ const auto=k==='sup'?X.sups.length>0:k==='due'?X.dues.length>0:did(k); const v=X.tasks[k]||(auto?'':'Skipped');
+    return `<div class="task"><b class="small">${l}${auto?' <span class="pill p-in">done</span>':''}</b><div class="chips">${['Alone','With help','Couldn’t','Skipped'].map(o=>`<button class="chip" data-a="task" data-k="${k}" data-v="${o}" aria-pressed="${v===o}">${o}</button>`).join('')}</div></div>`; }).join('');
+  return {body:`<div class="kicker">PART 3</div><h1>What did you think?</h1><p class="lead">Ask in their language. There are no wrong answers.</p>
+    <div class="card">${qs}</div>
+    <div class="card iv" style="margin-top:14px"><h3>Interviewer only</h3><p class="small muted" style="margin-top:0">How did each task go?</p>${tasks}
+      <div class="field" style="margin:14px 0 0"><label for="nt">What you noticed (where they got stuck, body language, etc.)</label><textarea id="nt" data-notes="1" placeholder="e.g. Looked for the pay button at the top; liked the Soundbox line">${esc(X.notes)}</textarea></div></div>`,
+   foot:`<button class="btn sec" data-a="to" data-s="tryApp">${ic('back')}</button><button class="btn grow" data-a="finish">${ic('check')}Save session</button>`};
+}
+function done(){
+  const fb=X.fb; const r=F.map(f=>[f.short,(X.react[f.id]||{}).r]);
+  const lab={yes:'👍 Useful',maybe:'🤔 Not sure',no:'👎 Not for me'};
+  return {body:`<div style="text-align:center"><div class="ok">${ic('check')}</div><h1>Session saved</h1><p class="lead">${(m=>m+(m===1?' minute':' minutes'))(Math.max(1,Math.round((X.ended-X.started)/60000)))} with ${esc(X.shop.name||X.vendor||'the shop owner')}. Thank them!</p></div>
+    <div class="card"><h3>Summary</h3><div class="sum"><span>Would use</span><b>${esc(fb.use||'—')}</b><span>Ease</span><b>${fb.ease?fb.ease+' / 5':'—'}</b><span>Most useful</span><b>${esc((fb.useful||[]).join(', ')||'—')}</b><span>Could stop them</span><b>${esc((fb.barriers||[]).join(', ')||'—')}</b><span>Quote</span><b>${fb.quote?'“'+esc(fb.quote)+'”':'—'}</b></div></div>
+    <div class="card" style="margin-top:14px"><h3>Feature reactions</h3><div class="sum">${r.map(([l,v])=>`<span>${l}</span><b>${v?lab[v]:'—'}</b>`).join('')}</div></div>
+    <div class="row" style="gap:10px;margin-top:14px;flex-wrap:wrap"><button class="btn sec grow" data-a="csv-one">${ic('down')}This session (CSV)</button><button class="btn sec grow" data-a="go" data-s="sessions">${ic('list')}All sessions</button></div>`,
+   foot:`<button class="btn grow" data-a="start">${ic('play')}Start next session</button>`};
+}
+
+/* ---------- sheets (try-it actions) ---------- */
+function sheet(){
+  const s=S.sheet; if(!s) return ''; const d=X&&X.dues.find(x=>x.id===s.id); let h='';
+  if(s.k==='pay'){ const o=owed(d), half=Math.round(o/2/100)*100||Math.round(o/2);
+    if(s.step==='amt') h=`<h2>Pay ${esc(supName(d.sid))}</h2><div class="mcard" style="margin:8px 0 12px"><div class="mrow"><span>Bill balance</span><b>${inr(outstanding(d))}</b></div>${interest(d)?`<div class="mrow"><span>Interest (late)</span><b class="amt-out">${inr(interest(d))}</b></div>`:''}<div class="mrow"><span>To close it</span><b>${inr(o)}</b></div></div>
+      <div class="field"><label for="pa">How much do you want to pay now?</label><input id="pa" inputmode="numeric" data-pay="1" value="${s.amt||''}" placeholder="₹ amount"></div>
+      <div class="chips" style="margin-bottom:14px"><button class="chip" data-a="pamt" data-v="${o}">Full ${inr(o)}</button><button class="chip" data-a="pamt" data-v="${half}">Half ${inr(half)}</button>${interest(d)?`<button class="chip" data-a="pamt" data-v="${interest(d)}">Interest only</button>`:''}</div>
+      <p class="small muted">Interest is cleared first, then the bill. The rest stays on the khata.</p>
+      <div class="row" style="gap:10px"><button class="btn sec" data-a="close">Cancel</button><button class="btn grow" data-a="pgo" id="pgo" ${s.amt>0?'':'disabled'}>${ic('shield')}Pay ${s.amt>0?inr(Math.min(s.amt,o)):''}</button></div>`;
+    if(s.step==='wait') h=`<div class="spin"></div><p style="text-align:center"><b>Paying ${inr(s.amt)}…</b><br><span class="small muted">In the real app you’d enter your UPI PIN here.</span></p>`;
+    if(s.step==='ok') h=`<div class="ok">${ic('check')}</div><div class="big num">${inr(s.amt)}</div><p style="text-align:center;margin-top:0">paid to <b>${esc(supName(d.sid))}</b></p>
+      <div class="mcard"><div class="mrow"><span>Still on khata</span><b>${inr(owed(d))}</b></div><div class="mrow"><span>Receipt</span><b class="amt-in">Sent on WhatsApp</b></div><div class="mrow"><span>Supplier’s khata</span><b class="amt-in">Updated</b></div></div>
+      <button class="btn block" data-a="close" style="margin-top:14px">Done</button>`; }
+  if(s.k==='ext'){
+    if(s.step==='ask') h=`<h2>Ask ${esc(supName(d.sid))} for more time</h2><p class="small muted">Now due ${fmtD(dueAt(d))}.</p>
+      <div class="field"><span class="qlabel">How many more days?</span><div class="chips">${[3,7,15].map(v=>`<button class="chip" data-a="exd" data-v="${v}" aria-pressed="${s.days===v}">${v} days</button>`).join('')}</div></div>
+      <div class="field"><span class="qlabel">Reason (optional)</span><div class="chips">${['Stock not sold yet','My customers haven’t paid','Festival rush'].map(v=>`<button class="chip" data-a="exr" data-v="${v}" aria-pressed="${s.why===v}">${v}</button>`).join('')}</div></div>
+      <div class="row" style="gap:10px"><button class="btn sec" data-a="close">Cancel</button><button class="btn grow" data-a="exgo">Send request</button></div>`;
+    if(s.step==='wait') h=`<div class="bubble b-me">Can I get ${s.days} more days?${s.why?' '+esc(s.why)+'.':''}</div><div class="spin" style="width:36px;height:36px;border-width:4px"></div><p class="small muted" style="text-align:center">Waiting for ${esc(supName(d.sid))}…</p>`;
+    if(s.step==='ok') h=`<div class="bubble b-me">Can I get ${s.days} more days?${s.why?' '+esc(s.why)+'.':''}</div><div class="bubble b-them">OK – ${s.days} more days. New date ${fmtD(dueAt(d))}.</div>
+      <div class="note" style="margin-top:10px">${ic('check')}<span>New date saved for both of you. In the real app the supplier can also say no.</span></div><button class="btn block" data-a="close" style="margin-top:14px">Done</button>`; }
+  if(s.k==='view') h=`<div class="kicker">WHAT ${esc(supName(d.sid)).toUpperCase()} SEES</div><h2 style="margin-top:4px">${esc(X.shop.name)} owes you</h2>
+    <div class="big num" style="text-align:left">${inr(owed(d))}</div>
+    <div class="mcard"><div class="mrow"><span>Goods given</span><b>${fmtD(d.givenAt)}</b></div><div class="mrow"><span>Interest-free till</span><b>${fmtD(dueAt(d))}</b></div><div class="mrow"><span>After that</span><b>${d.rate?d.rate+'% a month':'No interest'}</b></div><div class="mrow"><span>Paid so far</span><b class="amt-in">${inr(d.paid+d.intPaid)}</b></div><div class="mrow"><span>Status</span><b>${owed(d)<=0?'Settled':lateDays(d)?lateDays(d)+' days late':'On time'}</b></div></div>
+    <div class="note" style="margin-top:12px">${ic('hand')}<span>Same numbers on both phones. Every payment you make shows here the moment it’s done.</span></div>
+    <div class="row" style="gap:10px;margin-top:14px"><button class="btn sec grow" data-a="svrem">${ic('bell')}Remind shop</button><button class="btn grow" data-a="close">Back to my view</button></div>`;
+  return `<div class="scrim" data-a="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="grab"></div>${h}</div>`;
+}
+
+/* ---------- actions ---------- */
+function toast(m){ document.querySelectorAll('.toast').forEach(x=>x.remove()); const t=document.createElement('div'); t.className='toast'; t.setAttribute('role','status'); t.textContent=m; document.body.appendChild(t); setTimeout(()=>t.remove(),2800); }
+function go(s,extra){ S.screen=s; Object.assign(S,extra||{}); window.scrollTo(0,0); render(); }
+function download(name,text,type){ try{ const b=new Blob([text],{type}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500); toast('Downloaded '+name); }catch(e){ toast('Download not allowed here – open the demo in a normal browser tab'); } }
+function csvRows(list){
+  const head=['session_id','status','started','ended','minutes','interviewer','area','vendor_name','vendor_type','consent','recording',
+    ...F.flatMap(f=>['react_'+f.id,'note_'+f.id]),'shop_name','shop_type','suppliers_count','suppliers','dues_count','dues_total',
+    'did_pay_part','did_ask_more_days','did_supplier_view',...TASKS.map(t=>'task_'+t[0]),...Q.map(q=>q.id),'barrier_other','interviewer_notes'];
+  const q=v=>{ v=v==null?'':String(v); return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; };
+  const rows=list.map(s=>{ const fb=s.fb||{}; const has=k=>(s.log||[]).some(l=>l.t===k)?'yes':'no';
+    return [s.id,s.status,new Date(s.started).toISOString(),s.ended?new Date(s.ended).toISOString():'',Math.round(((s.ended||Date.now())-s.started)/60000),s.interviewer,s.area,s.vendor,s.vtype,s.consent?'yes':'no',s.recording?'yes':'no',
+      ...F.flatMap(f=>[(s.react[f.id]||{}).r||'',(s.react[f.id]||{}).note||'']),s.shop.name,s.shop.type,s.sups.length,
+      s.sups.map(x=>`${x.name} (${x.what||'-'}; ${x.via||'-'}; ${x.credit?x.credit+'d credit':'no credit'})`).join(' | '),s.dues.length,s.dues.reduce((a,d)=>a+d.amount,0),
+      has('pay'),has('ext'),has('view'),...TASKS.map(t=>(s.tasks||{})[t[0]]||''),...Q.map(qq=>Array.isArray(fb[qq.id])?fb[qq.id].join('; '):(fb[qq.id]||'')),fb.barrierOther||'',s.notes||''].map(q).join(','); });
+  return [head.join(','),...rows].join('\n');
+}
+function sampleSup(){ const t=X.shop.type||'Kirana'; const ex={'Kirana':['Nandini Milk Agency','Milk & dairy',0],'Medical store':['Lifeline Pharma Distributors','Pharma distributor',21],'Hardware':['Jain Pipes & Fittings','Pipes & fittings',30],'Restaurant / food':['Sri Balaji Provisions','Groceries',7],'Salon':['Glamour Cosmetics','Salon products',15],'Wholesaler':['Deccan Foods','Brand / company',15],'Other':['City Traders','Stock',15]}[t]||['City Traders','Stock',15];
+  return {id:uid(),name:ex[0],what:ex[1],via:'PhonePe',credit:ex[2]||15,sample:true}; }
+
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-a]'); if(!el) return; const a=el.dataset.a, v=el.dataset.v;
+  switch(a){
+    case 'theme': { const dark=document.documentElement.getAttribute('data-theme')==='dark'||(S.theme==='system'&&matchMedia('(prefers-color-scheme: dark)').matches); S.theme=dark?'light':'dark'; pref('theme',S.theme); render(); break; }
+    case 'go': go(el.dataset.s); break;
+    case 'start': X=newSession(); persist(); go('setup',{fi:0}); break;
+    case 'resume': case 'open': { X=loadAll().find(s=>s.id===el.dataset.id); if(!X) return; if(X.status==='complete') go('done'); else go(X.shop.type?'tryApp':'setup'); if(X.status!=='complete'&&!X.dues.length) go(X.consent?'tour':'setup',{fi:0}); break; }
+    case 'exit': persist(); X=null; S.sheet=null; go('home'); toast('Session saved – you can continue it later'); break;
+    case 'vtype': X.vtype=v; if(!X.shop.type) X.shop.type=v; persist(); render(); break;
+    case 'flip': X[el.dataset.k]=!X[el.dataset.k]; persist(); render(); break;
+    case 'to': { const s=el.dataset.s; if(s==='tour'&&el.dataset.fi) S.fi=+el.dataset.fi; else if(s==='tour'&&S.screen==='setup'){ S.fi=0; logE('tour_start'); } go(s); if(s==='tryApp') logE('app_view'); break; }
+    case 'react': { const f=F[S.fi]; X.react[f.id]=Object.assign(X.react[f.id]||{},{r:v}); persist(); render(); break; }
+    case 'tour-back': if(S.fi>0){ S.fi--; window.scrollTo(0,0); render(); } else go('setup'); break;
+    case 'tour-next': if(S.fi<F.length-1){ S.fi++; window.scrollTo(0,0); render(); } else go('tryIntro'); break;
+    case 'stype': X.shop.type=v; persist(); render(); break;
+    case 'supadd': S.supForm={name:'',what:'',via:'',credit:15}; S._focus='sfn'; render(); break;
+    case 'sf': S.supForm[el.dataset.k]=el.dataset.k==='credit'?+v:v; render(); break;
+    case 'supcancel': S.supForm=null; render(); break;
+    case 'supsave': { const f=S.supForm; if(!f.name.trim()) return; X.sups.push({id:uid(),name:f.name.trim(),what:f.what,via:f.via,credit:f.credit}); S.supForm=null; logE('sup_add',f.name); render(); toast('Supplier saved'); break; }
+    case 'sample': X.sups.push(sampleSup()); logE('sup_sample'); render(); break;
+    case 'delsup': X.sups=X.sups.filter(s=>s.id!==el.dataset.id); X.dues=X.dues.filter(d=>d.sid!==el.dataset.id); persist(); render(); break;
+    case 'dueadd': { const s0=X.sups[0]; S.dueForm={sid:s0.id,amount:'',ago:7,free:s0.credit||15,rate:1.5}; S._focus='dfa'; render(); break; }
+    case 'df': { const k=el.dataset.k; S.dueForm[k]=k==='sid'?v:+v; if(k==='sid'){ const s=X.sups.find(x=>x.id===v); if(s&&s.credit) S.dueForm.free=s.credit; } render(); break; }
+    case 'duecancel': S.dueForm=null; render(); break;
+    case 'duesave': { const f=S.dueForm; const amt=+String(f.amount).replace(/\D/g,''); if(!(amt>0)) return; X.dues.push({id:uid(),sid:f.sid,amount:amt,givenAt:today0-f.ago*DAY,freeDays:f.free,rate:f.rate,ext:0,paid:0,intPaid:0}); S.dueForm=null; logE('due_add',amt); render(); toast('Udhaar saved'); break; }
+    case 'sampledue': { const s=X.sups[0]; X.dues.push({id:uid(),sid:s.id,amount:24500,givenAt:today0-12*DAY,freeDays:10,rate:1.5,ext:0,paid:0,intPaid:0,sample:true}); logE('due_sample'); render(); break; }
+    case 'deldue': X.dues=X.dues.filter(d=>d.id!==el.dataset.id); persist(); render(); break;
+    case 'pay': S.sheet={k:'pay',id:el.dataset.id,step:'amt',amt:0}; S._focus='pa'; render(); break;
+    case 'pamt': S.sheet.amt=+v; render(); break;
+    case 'pgo': { const s=S.sheet; const d=X.dues.find(x=>x.id===s.id); const amt=Math.min(s.amt,owed(d)); if(!(amt>0)) return; s.amt=amt; s.step='wait'; render();
+      setTimeout(()=>{ const it=interest(d); const toInt=Math.min(it,amt); d.intPaid+=toInt; d.paid+=Math.min(outstanding(d),amt-toInt); logE('pay',amt); s.step='ok'; render(); },1200); break; }
+    case 'ext': S.sheet={k:'ext',id:el.dataset.id,step:'ask',days:7,why:''}; render(); break;
+    case 'exd': S.sheet.days=+v; render(); break;
+    case 'exr': S.sheet.why=S.sheet.why===v?'':v; render(); break;
+    case 'exgo': { const s=S.sheet; s.step='wait'; render(); setTimeout(()=>{ const d=X.dues.find(x=>x.id===s.id); d.ext+=s.days; logE('ext',s.days); s.step='ok'; render(); },1500); break; }
+    case 'view': S.sheet={k:'view',id:el.dataset.id}; logE('view'); render(); break;
+    case 'svrem': toast('Reminder sent – it would reach the shop’s app and Soundbox'); logE('sv_reminder'); break;
+    case 'close': S.sheet=null; render(); break;
+    case 'fb1': X.fb[el.dataset.q]=X.fb[el.dataset.q]===v?'':v; persist(); render(); break;
+    case 'fbm': { const k=el.dataset.q, arr=X.fb[k]||[]; if(v==='Nothing') X.fb[k]=arr.includes('Nothing')?[]:['Nothing']; else { const a2=arr.filter(x=>x!=='Nothing'); X.fb[k]=a2.includes(v)?a2.filter(x=>x!==v):[...a2,v]; } persist(); render(); break; }
+    case 'task': X.tasks[el.dataset.k]=X.tasks[el.dataset.k]===v?'':v; persist(); render(); break;
+    case 'finish': { TASKS.forEach(([k])=>{ if(!X.tasks[k]){ const auto=k==='sup'?X.sups.length>0:k==='due'?X.dues.length>0:did(k); if(!auto) X.tasks[k]='Skipped'; } }); X.ended=Date.now(); X.status='complete'; persist(); go('done'); break; }
+    case 'csv-one': download(`vyapaar-demo-${X.id}.csv`,csvRows([X]),'text/csv'); break;
+    case 'csv-all': download(`vyapaar-demo-all-${new Date().toISOString().slice(0,10)}.csv`,csvRows(loadAll()),'text/csv'); break;
+    case 'json-all': download(`vyapaar-demo-all-${new Date().toISOString().slice(0,10)}.json`,JSON.stringify(loadAll(),null,2),'application/json'); break;
+    case 'wipe': if(confirm('Delete all saved sessions on this device? Download them first.')){ saveAll([]); render(); toast('All sessions deleted'); } break;
+  }
+});
+document.addEventListener('input',e=>{
+  const t=e.target, d=t.dataset;
+  if(d.f){ X[d.f]=t.value; if(d.f==='interviewer'||d.f==='area') pref(d.f,t.value); persist(); }
+  if(d.reactNote){ X.react[d.reactNote]=Object.assign(X.react[d.reactNote]||{},{note:t.value}); persist(); }
+  if(d.shop){ X.shop[d.shop]=t.value; persist(); const b=document.getElementById('nx'); if(b) b.disabled=!(X.shop.name.trim()&&X.shop.type); }
+  if(d.sf){ S.supForm[d.sf]=t.value; const b=document.getElementById('sfsave'); if(b) b.disabled=!t.value.trim(); }
+  if(d.df){ const n=+t.value.replace(/\D/g,''); t.value=n||''; S.dueForm.amount=n; const b=document.getElementById('dfsave'); if(b) b.disabled=!(n>0&&S.dueForm.sid);
+    const p=document.getElementById('dprev'); const f=S.dueForm; if(p) p.querySelector('span').innerHTML=n?duePreview({givenAt:today0-f.ago*DAY,freeDays:f.free,ext:0,amount:n,paid:0,intPaid:0,rate:f.rate}):'Enter an amount to see the due date.'; }
+  if(d.pay){ const n=+t.value.replace(/\D/g,''); t.value=n||''; S.sheet.amt=n; const b=document.getElementById('pgo'); const dd=X.dues.find(x=>x.id===S.sheet.id); if(b){ b.disabled=!(n>0); b.innerHTML=ic('shield')+'Pay '+(n>0?inr(Math.min(n,owed(dd))):''); } }
+  if(d.fbt){ X.fb[d.fbt]=t.value; persist(); }
+  if(d.notes){ X.notes=t.value; persist(); }
+});
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&S.sheet){ S.sheet=null; render(); } });
+if(window.matchMedia) matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{ if(S.theme==='system') render(); });
+render();
+</script>
+</body>
+</html>
